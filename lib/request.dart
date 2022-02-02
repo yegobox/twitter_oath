@@ -1,14 +1,9 @@
-import 'dart:math';
 import 'dart:convert';
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:convert/convert.dart';
-import 'package:crypto/crypto.dart';
 import 'package:twitter_oauth/consumer.dart';
 
 import 'signature_method.dart';
 import 'token.dart';
+import 'util/util.dart';
 
 class Request {
   Map<String, dynamic> parameters = {};
@@ -33,7 +28,9 @@ class Request {
     Map<String, String> defaults = {
       'oauth_version': '1.0',
       'oauth_nonce': generateNonce(),
-      'oauth_timestamp': 1643696722.toString(),
+      // 'oauth_timestamp':
+      //     (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+      'oauth_timestamp': '1643791057',
       'oauth_consumer_key': consumer!.key,
     };
     if (token != null) {
@@ -77,14 +74,24 @@ class Request {
   }
 
   String getSignableParameters() {
+    // Remove oauth_signature if present
+    // Ref: Spec: 9.1.1 ("The oauth_signature parameter MUST be excluded.")
+    if (parameters.containsKey("oauth_signature")) {
+      parameters.remove("oauth_signature");
+    }
     return parameters.keys.map((key) => '$key=${parameters[key]}').join('&');
+    // return Util.buildHttpQuery(parameters);
   }
 
   String getSignatureBaseString() {
-    var url = json.encode(httpUrl.toString());
-    var sigString = json.encode(getSignableParameters());
-    var signatureBaseString = "${httpMethod.toUpperCase()}&$url&$sigString";
-    return signatureBaseString;
+    var parts = [
+      httpMethod.toUpperCase(),
+      httpUrl,
+      getSignableParameters(),
+    ];
+    parts = parts.map((part) => Uri.encodeComponent(part)).toList();
+
+    return parts.join('&');
   }
 
   String getNormalizedHttpMethod() {

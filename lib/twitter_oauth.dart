@@ -139,6 +139,7 @@ class TwitterOAuth extends Config {
     http.Response? result = await oAuthRequest(host, 'POST', parameters, false);
 
     Map<String, String> map = {};
+
     result?.body.split('&').forEach((element) {
       List<String> list = element.split('=');
       map[list[0]] = list[1];
