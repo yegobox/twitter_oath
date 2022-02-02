@@ -21,20 +21,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-  // TwitterOAuth twitterOAuth = TwitterOAuth(
-  //   consumerKey: 'nQq6POUAjDnjf8fCXthjInvSz',
-  //   consumerSecret: 'eS2ek4CxwIsvwuGTOvZlVjLXJCdWGg2Dv7itg6gWAeKNTKchxt',
-  // );
+  final int _counter = 0;
+
+  TwitterOath twitterOath = TwitterOath(
+    apiKey: "nQq6POUAjDnjf8fCXthjInvSz",
+    // callbackUrl: "http://localhost:56175/callback",
+    apiSecret: "eS2ek4CxwIsvwuGTOvZlVjLXJCdWGg2Dv7itg6gWAeKNTKchxt",
+  );
 
   void _incrementCounter() async {
-    // final token = await twitterOAuth.oauth('oauth/request_token', {
-    //   'oauth_callback': 'http://localhost:56175/callback',
-    // });
-
-    // if (twitterOAuth.getLastHttpCode() != 200) {
-    //   // throw Exception('Error getting request token');
-    // }
+    // call auth func.
+    twitterOath.auth();
 
     /// print the token we got from the server
     // print(token);
